@@ -1,0 +1,73 @@
+USE WORLD;
+SHOW TABLES;
+
+#1. Number of Cities in the USA 
+SELECT COUNT(countrycode) FROM city WHERE countrycode = 'USA';
+
+#2. Population and Life Expectancy in Argentina 
+SELECT name, Population, LifeExpectancy FROM country WHERE name = 'Argentina';
+
+#3. Finding Country with the highest life expectancy
+SELECT * FROM country WHERE LifeExpectancy IS NOT NULL ORDER BY LifeExpectancy DESC LIMIT 1;
+
+#4 Finding the Capital City of Spain 
+SELECT c.name FROM city c JOIN country cr ON c.ID=cr.Capital WHERE cr.Name='Spain';
+
+#5 List all the languages spoken in the Southeast Asia region
+SELECT Language FROM countrylanguage clang JOIN country cr ON clang.CountryCode = cr.Code WHERE cr.Region = 'Southeast Asia';
+
+#6 List 25 cities around the world that start with the letter F
+SELECT name FROM city WHERE name LIKE 'f%' LIMIT 25;
+
+#7 Get the number of cities in China.
+SELECT COUNT(c.name) AS Cities FROM city c JOIN country cr ON c.countrycode=cr.Code WHERE cr.code = 'CHN';
+
+#8 Country has the lowest population? 
+SELECT * FROM country WHERE population IS NOT NULL AND population > 0 ORDER BY population ASC LIMIT 1;
+
+#9 Number of countries the database contains
+SELECT COUNT(name) FROM country; 
+
+#10 Top ten largest countries by area
+SELECT name, surfacearea FROM country ORDER BY surfacearea DESC LIMIT 10;
+
+#11 Five largest cities by population in Japan
+SELECT name, population FROM city WHERE countrycode = 'JPN' ORDER BY population DESC LIMIT 5;
+
+#12 List the names and country codes of every country with Elizabeth II as its Head of State
+UPDATE country SET HeadOfState= 'Elizabeth II' WHERE HeadOfState = 'Elisabeth II'; 
+SELECT name, code FROM country WHERE HeadOfState = 'Elizabeth II';
+
+#13 List the top ten countries with the smallest population-to-area ratio
+SELECT * 
+FROM (
+	SELECT Name, Population, SurfaceArea, (Population/SurfaceArea) AS Ratio
+    FROM Country 
+    WHERE Population IS NOT NULL 
+    AND Population!=0
+) AS PopulationToAreaRatio 
+ORDER BY Ratio 
+Limit 10; 
+#SELECT name, population, surfacearea, (population / surfacearea) AS ratio FROM country WHERE (population / surfacearea) > 0 ORDER BY (population/surfacearea) ASC LIMIT 10;
+
+#14 List every unique world language
+SELECT DISTINCT language FROM countrylanguage;
+
+#15 List the names and GNP of the world's top 10 richest countries
+SELECT name, GNP FROM country ORDER BY GNP DESC LIMIT 10;
+
+#16 List the names of, and number of languages spoken by, the top ten most multilingual countries
+SELECT DISTINCT language, COUNT(Language) AS frequency FROM countrylanguage GROUP BY language ORDER BY frequency DESC LIMIT 10; 
+
+#17 List every country where over 50% of its population can speak German
+#SELECT Countrycode, language FROM countrylanguage WHERE language = 'German' AND Percentage > 50 ;
+SELECT cr.name, cl.language FROM countrylanguage cl JOIN country cr ON cl.CountryCode=cr.Code WHERE cl.language = 'GERMAN' AND cl.Percentage > 50;
+
+#18 Which country has the worst life expectancy? 
+SELECT name, LifeExpectancy FROM country WHERE LifeExpectancy IS NOT NULL AND Lifeexpectancy > 0 ORDER BY LifeExpectancy ASC LIMIT 1;
+
+#19 List the top three most common government forms
+SELECT DISTINCT name, COUNT(GovernmentForm) FROM country GROUP BY GovernmentForm ORDER BY frequency DESC LIMIT 3;
+
+#20 How many countries have gained independence since records began
+SELECT COUNT(IndepYear) FROM country;
